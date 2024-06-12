@@ -12,6 +12,19 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
+void prepare() {
+    // 创建一个VBO，还没有真正分配显存
+    GLuint vbo = 0;
+    GL_CALL(glGenBuffers(1, &vbo));
+    // 销毁一个VBO
+    GL_CALL(glDeleteBuffers(1, &vbo));
+    // 创建n个VBO
+    GLuint vobArr[] = {0, 0, 0};
+    GL_CALL(glGenBuffers(3, vobArr));
+    // 销毁n个VBO
+    GL_CALL(glDeleteBuffers(3, vobArr));
+}
+
 int main() {
     if (!application->init()) {
         return -1;
@@ -25,6 +38,8 @@ int main() {
     // 设置opengl视口以及清理颜色
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f))
+
+    prepare();
 
     // 执行窗体循环
     while (application->update()) {
