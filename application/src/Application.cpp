@@ -47,6 +47,9 @@ bool Application::init(const int &width, const int &height) {
     // 将Application对象指针绑定到窗体对象上
     glfwSetWindowUserPointer(mWindow, this);
 
+    // 键盘事件相应
+    glfwSetKeyCallback(mWindow, keyCallback);
+
     return true;
 }
 
@@ -68,6 +71,13 @@ void Application::destroy() {
 void Application::frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
 //    if (Application::getInstance()->mResizeCallback != nullptr)
 //        Application::getInstance()->mResizeCallback(width, height);
-    Application* self = (Application*)glfwGetWindowUserPointer(window);
-    self->mResizeCallback(width, height);
+    Application *self = (Application *) glfwGetWindowUserPointer(window);
+    if (self->mResizeCallback != nullptr)
+        self->mResizeCallback(width, height);
+}
+
+void Application::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    Application *self = (Application *) glfwGetWindowUserPointer(window);
+    if (self->mKeyBoardCallback != nullptr)
+        self->mKeyBoardCallback(key, action, mods);
 }

@@ -7,6 +7,7 @@
 class GLFWwindow;
 
 using ResizeCallback = void (*)(int width, int height);
+using KeyBoardCallback = void (*)(int key, int action, int mods);
 
 class Application {
 public:
@@ -38,9 +39,14 @@ public:
 
     void setResizeCallback(ResizeCallback callback) { mResizeCallback = callback; }
 
+    void setKeyBoardCallback(KeyBoardCallback callback) { mKeyBoardCallback = callback; }
+
 private:
     Application();
+
     static void frameBufferSizeCallback(GLFWwindow *window, int width, int height);
+
+    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 private:
     static Application *mInstance;
@@ -48,4 +54,5 @@ private:
     uint32_t mHeight{0};
     GLFWwindow *mWindow{nullptr};
     ResizeCallback mResizeCallback{nullptr};
+    KeyBoardCallback mKeyBoardCallback{nullptr};
 };
