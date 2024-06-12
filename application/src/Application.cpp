@@ -41,6 +41,12 @@ bool Application::init(const int &width, const int &height) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return false;
     }
+
+    glfwSetFramebufferSizeCallback(mWindow, frameBufferSizeCallback);
+
+    // 将Application对象指针绑定到窗体对象上
+    glfwSetWindowUserPointer(mWindow, this);
+
     return true;
 }
 
@@ -57,4 +63,11 @@ bool Application::update() {
 
 void Application::destroy() {
     glfwTerminate();
+}
+
+void Application::frameBufferSizeCallback(GLFWwindow *window, int width, int height) {
+//    if (Application::getInstance()->mResizeCallback != nullptr)
+//        Application::getInstance()->mResizeCallback(width, height);
+    Application* self = (Application*)glfwGetWindowUserPointer(window);
+    self->mResizeCallback(width, height);
 }

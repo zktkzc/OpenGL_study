@@ -4,10 +4,17 @@
 #include "wrapper/include/checkError.h"
 #include "application/include/Application.h"
 
+void OnResize(int width, int height) {
+    GL_CALL(glViewport(0, 0, width, height));
+}
+
 int main() {
     if (!application->init()) {
         return -1;
     }
+
+    // 设置窗口大小改变回调
+    application->setResizeCallback(OnResize);
 
     // 设置opengl视口以及清理颜色
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
