@@ -114,6 +114,22 @@ void prepareShader() {
         glGetShaderInfoLog(fragment, 1024, NULL, infoLog);
         std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
+
+    // 创建program并附加shader
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertex);
+    glAttachShader(shaderProgram, fragment);
+    // 链接program
+    glLinkProgram(shaderProgram);
+    // 检查program是否正确链接
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 1024, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    // 删除shader，因为它们已经链接到program中了
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
 }
 
 int main() {
