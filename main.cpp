@@ -60,6 +60,17 @@ void prepareInterleaveBuffer() {
     GL_CALL(glGenBuffers(1, &vbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+
+    GLuint vao;
+    GL_CALL(glGenVertexArrays(1, &vao));
+    GL_CALL(glBindVertexArray(vao));
+
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GL_CALL(glEnableVertexAttribArray(0));
+    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0));
+    GL_CALL(glEnableVertexAttribArray(1));
+    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float))));
+    GL_CALL(glBindVertexArray(0));
 }
 
 int main() {
@@ -76,7 +87,7 @@ int main() {
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
-    prepareSingleBuffer();
+    prepareInterleaveBuffer();
 
     // 执行窗体循环
     while (application->update()) {
