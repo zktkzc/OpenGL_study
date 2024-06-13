@@ -13,16 +13,18 @@ void OnKeyBoard(int key, int action, int mods) {
 }
 
 void prepare() {
-    // 创建一个VBO，还没有真正分配显存
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+    };
+    // 生成一个VBO
     GLuint vbo = 0;
     GL_CALL(glGenBuffers(1, &vbo));
-    // 销毁一个VBO
-    GL_CALL(glDeleteBuffers(1, &vbo));
-    // 创建n个VBO
-    GLuint vobArr[] = {0, 0, 0};
-    GL_CALL(glGenBuffers(3, vobArr));
-    // 销毁n个VBO
-    GL_CALL(glDeleteBuffers(3, vobArr));
+    // 绑定当前VBO，到OpenGL状态机的当前VBO插槽上，GL_ARRAY_BUFFER表示当前vbo这个插槽
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    // 向当前VBO传输数据，也是在开辟显存
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 }
 
 int main() {
