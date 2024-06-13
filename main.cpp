@@ -12,21 +12,6 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
-void prepare() {
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
-    };
-    // 生成一个VBO
-    GLuint vbo = 0;
-    GL_CALL(glGenBuffers(1, &vbo));
-    // 绑定当前VBO，到OpenGL状态机的当前VBO插槽上，GL_ARRAY_BUFFER表示当前vbo这个插槽
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    // 向当前VBO传输数据，也是在开辟显存
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-}
-
 void prepareSingleBuffer() {
     // 准备顶点数据和颜色数据
     float positions[] = {
@@ -43,13 +28,26 @@ void prepareSingleBuffer() {
     // 为位置和颜色数据各生成一个VBO
     GLuint posVbo = 0, colorVbo = 0;
     GL_CALL(glGenBuffers(1, &posVbo));
-    GL_CALL(glGenBuffers(1, &colorVbo));
-    // 给两个VBO各自填充数据
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
-
+    GL_CALL(glGenBuffers(1, &colorVbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
+    // 生成VAO并且绑定
+    GLuint vao = 0;
+    GL_CALL(glGenVertexArrays(1, &vao));
+    GL_CALL(glBindVertexArray(vao));
+    // 分别将位置/颜色属性的描述信息加入VAO中
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GL_CALL(glEnableVertexAttribArray(0));
+    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
+    GL_CALL(glEnableVertexAttribArray(1));
+    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+
+    // 将当前VAO进行解绑
+    GL_CALL(glBindVertexArray(0));
 }
 
 void prepareInterleaveBuffer() {
@@ -78,7 +76,7 @@ int main() {
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
-    prepareInterleaveBuffer();
+    prepareSingleBuffer();
 
     // 执行窗体循环
     while (application->update()) {
