@@ -1,4 +1,4 @@
-#include "../include/checkError.h"
+#include "checkError.h"
 #include <glad/glad.h>
 #include <string>
 #include <iostream>

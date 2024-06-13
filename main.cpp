@@ -1,8 +1,8 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "wrapper/include/checkError.h"
-#include "application/include/Application.h"
+#include "checkError.h"
+#include "Application.h"
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -52,6 +52,18 @@ void prepareSingleBuffer() {
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
 }
 
+void prepareInterleaveBuffer() {
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+    GLuint vbo;
+    GL_CALL(glGenBuffers(1, &vbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+}
+
 int main() {
     if (!application->init()) {
         return -1;
@@ -64,14 +76,14 @@ int main() {
 
     // 设置opengl视口以及清理颜色
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
-    GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f))
+    GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
-    prepareSingleBuffer();
+    prepareInterleaveBuffer();
 
     // 执行窗体循环
     while (application->update()) {
         // 执行OpenGL画布清理操作
-        GL_CALL(glClear(GL_COLOR_BUFFER_BIT))
+        GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
     }
 
     // 退出程序前做相关清理
