@@ -73,6 +73,49 @@ void prepareInterleaveBuffer() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareShader() {
+    // 完成vs与fs的源代码，并装入字符串
+    const char *vertexShaderSource =
+            "#version 460 core\n"
+            "layout (location = 0) in vec3 aPos;\n"
+            "void main()\n"
+            "{\n"
+            "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+            "}\0";
+    const char *fragmentShaderSource =
+            "#version 460 core\n"
+            "out vec4 FragColor;\n"
+            "void main()\n"
+            "{\n"
+            "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+            "}\0";
+
+    // 创建shader程序
+    GLuint vertex, fragment;
+    vertex = glCreateShader(GL_VERTEX_SHADER);
+    fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    // 为shader程序输入shader代码
+    glShaderSource(vertex, 1, &vertexShaderSource, NULL);
+    glShaderSource(fragment, 1, &fragmentShaderSource, NULL);
+    int success = 0;
+    char infoLog[1024];
+    // 执行shader代码编译
+    glCompileShader(vertex);
+    // 查看vertex是否正确编译
+    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertex, 1024, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+    glCompileShader(fragment);
+    // 检查fragment是否正确编译
+    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragment, 1024, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+}
+
 int main() {
     if (!application->init()) {
         return -1;
@@ -87,6 +130,7 @@ int main() {
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
+    prepareShader();
     prepareInterleaveBuffer();
 
     // 执行窗体循环
