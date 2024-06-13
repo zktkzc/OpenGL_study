@@ -27,6 +27,31 @@ void prepare() {
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 }
 
+void prepareSingleBuffer() {
+    // 准备顶点数据和颜色数据
+    float positions[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f
+    };
+    float colors[] = {
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f
+    };
+
+    // 为位置和颜色数据各生成一个VBO
+    GLuint posVbo = 0, colorVbo = 0;
+    GL_CALL(glGenBuffers(1, &posVbo));
+    GL_CALL(glGenBuffers(1, &colorVbo));
+    // 给两个VBO各自填充数据
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
+}
+
 int main() {
     if (!application->init()) {
         return -1;
@@ -41,7 +66,7 @@ int main() {
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f))
 
-    prepare();
+    prepareSingleBuffer();
 
     // 执行窗体循环
     while (application->update()) {
