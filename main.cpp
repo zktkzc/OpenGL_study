@@ -4,6 +4,8 @@
 #include "checkError.h"
 #include "Application.h"
 
+GLuint vao, program;
+
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
 }
@@ -34,7 +36,6 @@ void prepareSingleBuffer() {
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
     // 生成VAO并且绑定
-    GLuint vao = 0;
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
     // 分别将位置/颜色属性的描述信息加入VAO中
@@ -61,7 +62,6 @@ void prepareInterleaveBuffer() {
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-    GLuint vao;
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
 
@@ -116,20 +116,32 @@ void prepareShader() {
     }
 
     // 创建program并附加shader
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertex);
-    glAttachShader(shaderProgram, fragment);
+    program = glCreateProgram();
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
     // 链接program
-    glLinkProgram(shaderProgram);
+    glLinkProgram(program);
     // 检查program是否正确链接
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shaderProgram, 1024, NULL, infoLog);
+        glGetProgramInfoLog(program, 1024, NULL, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
     }
     // 删除shader，因为它们已经链接到program中了
     glDeleteShader(vertex);
     glDeleteShader(fragment);
+}
+
+void render() {
+    // 执行OpenGL画布清理操作
+    GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+
+    // 绑定当前的program
+    GL_CALL(glUseProgram(program));
+    // 绑定VAO
+    GL_CALL(glBindVertexArray(vao));
+    // 发出绘制指令
+    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 3));
 }
 
 int main() {
@@ -151,8 +163,7 @@ int main() {
 
     // 执行窗体循环
     while (application->update()) {
-        // 执行OpenGL画布清理操作
-        GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
+        render();
     }
 
     // 退出程序前做相关清理
