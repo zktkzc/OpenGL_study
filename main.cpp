@@ -73,6 +73,34 @@ void prepareInterleaveBuffer() {
     GL_CALL(glBindVertexArray(0));
 }
 
+void prepareVAOForGLTriangles() {
+    // 准备顶点数据和颜色数据
+    float positions[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            0.8f, 0.8f, 0.0f,
+            0.8f, 0.0f, 0.0f
+    };
+
+    // 为位置生成一个VBO
+    GLuint posVbo = 0;
+    GL_CALL(glGenBuffers(1, &posVbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+    // 生成VAO并且绑定
+    GL_CALL(glGenVertexArrays(1, &vao));
+    GL_CALL(glBindVertexArray(vao));
+    // 将位置的描述信息加入VAO中
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GL_CALL(glEnableVertexAttribArray(0));
+    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+
+    // 将当前VAO进行解绑
+    GL_CALL(glBindVertexArray(0));
+}
+
 void prepareShader() {
     // 完成vs与fs的源代码，并装入字符串
     const char *vertexShaderSource =
@@ -141,7 +169,7 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 3));
+    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
 }
 
 int main() {
@@ -159,7 +187,7 @@ int main() {
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
     prepareShader();
-    prepareInterleaveBuffer();
+    prepareVAOForGLTriangles();
 
     // 执行窗体循环
     while (application->update()) {
