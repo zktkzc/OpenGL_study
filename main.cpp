@@ -14,90 +14,39 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
-void prepareSingleBuffer() {
+void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             0.0f, 0.5f, 0.0f
     };
-    float colors[] = {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f
+    unsigned int indices[] = {
+            0, 1, 2,
+            0, 2, 3
     };
 
-    // 为位置和颜色数据各生成一个VBO
-    GLuint posVbo = 0, colorVbo = 0;
-    GL_CALL(glGenBuffers(1, &posVbo));
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
-    GL_CALL(glGenBuffers(1, &colorVbo));
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
-    // 生成VAO并且绑定
-    GL_CALL(glGenVertexArrays(1, &vao));
-    GL_CALL(glBindVertexArray(vao));
-    // 分别将位置/颜色属性的描述信息加入VAO中
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GL_CALL(glEnableVertexAttribArray(0));
-    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
-    GL_CALL(glEnableVertexAttribArray(1));
-    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
-
-    // 将当前VAO进行解绑
-    GL_CALL(glBindVertexArray(0));
-}
-
-void prepareInterleaveBuffer() {
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-    };
+    // 创建VBO
     GLuint vbo;
     GL_CALL(glGenBuffers(1, &vbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-
-    GL_CALL(glGenVertexArrays(1, &vao));
-    GL_CALL(glBindVertexArray(vao));
-
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-    GL_CALL(glEnableVertexAttribArray(0));
-    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0));
-    GL_CALL(glEnableVertexAttribArray(1));
-    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float))));
-    GL_CALL(glBindVertexArray(0));
-}
-
-void prepareVAOForGLTriangles() {
-    // 准备顶点数据和颜色数据
-    float positions[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            0.8f, 0.8f, 0.0f,
-            0.8f, 0.0f, 0.0f
-    };
-
-    // 为位置生成一个VBO
-    GLuint posVbo = 0;
-    GL_CALL(glGenBuffers(1, &posVbo));
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
-    // 生成VAO并且绑定
+    // 创建EBO
+    GLuint ebo;
+    GL_CALL(glGenBuffers(1, &ebo));
+    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GL_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    // 创建VAO
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
-    // 将位置的描述信息加入VAO中
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    // 绑定VAO和EBO，加入属性描述信息
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
 
-    // 将当前VAO进行解绑
+    GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+
+    // 清理
     GL_CALL(glBindVertexArray(0));
 }
 
@@ -169,8 +118,7 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-//    GL_CALL(glDrawArrays(GL_LINES, 0, 6));
-    GL_CALL(glDrawArrays(GL_LINE_STRIP, 0, 6));
+    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
 }
 
 int main() {
@@ -188,7 +136,7 @@ int main() {
     GL_CALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 
     prepareShader();
-    prepareVAOForGLTriangles();
+    prepareVAO();
 
     // 执行窗体循环
     while (application->update()) {
