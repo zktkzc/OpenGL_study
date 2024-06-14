@@ -169,7 +169,9 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
+//    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6)); // 绘制为两个三角形
+//    GL_CALL(glDrawArrays(GL_TRIANGLE_STRIP, 0, 6)); // 复用前两个顶点
+    GL_CALL(glDrawArrays(GL_TRIANGLE_FAN, 0, 6)); // 所有三角形都用第一个顶点
 }
 
 int main() {
