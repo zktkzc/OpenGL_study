@@ -19,11 +19,12 @@ void prepareVAO() {
     float positions[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+            0.0f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f
     };
     unsigned int indices[] = {
             0, 1, 2,
-            0, 2, 3
+            2, 1, 3
     };
 
     // 创建VBO
@@ -118,7 +119,8 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 6));
+//    GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));
+    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) (3 * sizeof(int))));
 }
 
 int main() {
