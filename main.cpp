@@ -20,18 +20,26 @@ void prepareVAO() {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
             0.0f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f
+    };
+    float colors[] = {
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f,
     };
     unsigned int indices[] = {
             0, 1, 2,
-            2, 1, 3
     };
 
     // 创建VBO
-    GLuint vbo;
-    GL_CALL(glGenBuffers(1, &vbo));
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GLuint posVbo, colorVbo;
+    GL_CALL(glGenBuffers(1, &posVbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+
+    GL_CALL(glGenBuffers(1, &colorVbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
+
     // 创建EBO
     GLuint ebo;
     GL_CALL(glGenBuffers(1, &ebo));
@@ -41,13 +49,17 @@ void prepareVAO() {
     GL_CALL(glGenVertexArrays(1, &vao));
     GL_CALL(glBindVertexArray(vao));
     // 绑定VAO和EBO，加入属性描述信息
-    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glEnableVertexAttribArray(0));
     GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
 
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
+    GL_CALL(glEnableVertexAttribArray(1));
+    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
-    // 清理
+    // 解绑VAO
     GL_CALL(glBindVertexArray(0));
 }
 
@@ -56,16 +68,20 @@ void prepareShader() {
     const char *vertexShaderSource =
             "#version 460 core\n"
             "layout (location = 0) in vec3 aPos;\n"
+            "layout (location = 1) in vec3 aColor;\n"
+            "out vec3 color;\n"
             "void main()\n"
             "{\n"
             "    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+            "    color = aColor;\n"
             "}\0";
     const char *fragmentShaderSource =
             "#version 460 core\n"
             "out vec4 FragColor;\n"
+            "in vec3 color;\n"
             "void main()\n"
             "{\n"
-            "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+            "    FragColor = vec4(color, 1.0f);\n"
             "}\0";
 
     // 创建shader程序
@@ -119,8 +135,9 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-//    GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0));
-    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) (3 * sizeof(int))));
+    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0));
+    // 解绑VAO
+    GL_CALL(glBindVertexArray(0));
 }
 
 int main() {
