@@ -11,6 +11,10 @@ public:
 
     void bind() const;
 
+    int getWidth() const { return mWidth; }
+
+    int getHeight() const { return mHeight; }
+
 private:
     GLuint mTexture{0};
     int mWidth{0};
