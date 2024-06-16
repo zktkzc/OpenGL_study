@@ -77,6 +77,7 @@ void render() {
     shader->begin();
     // 设置uniform变量
     shader->setFloat("time", (float) glfwGetTime());
+    shader->setFloat("speed", 10.0f);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
