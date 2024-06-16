@@ -7,7 +7,7 @@
 
 GLuint vao;
 Shader *shader = nullptr;
-Texture *grassTexture = nullptr, *landTexture = nullptr, *noiseTexture = nullptr;
+Texture *texture = nullptr;
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -89,9 +89,7 @@ void prepareShader() {
 }
 
 void prepareTexture() {
-    grassTexture = new Texture("assets/textures/grass.jpg", 0);
-    landTexture = new Texture("assets/textures/land.jpg", 1);
-    noiseTexture = new Texture("assets/textures/noise.jpg", 2);
+    texture = new Texture("assets/textures/1.jpg", 0);
 }
 
 void render() {
@@ -101,9 +99,8 @@ void render() {
     // 绑定当前的program
     shader->begin();
     // 设置uniform变量
-    shader->setInt("grassSampler", 0);
-    shader->setInt("landSampler", 1);
-    shader->setInt("noiseSampler", 2);
+    shader->setInt("sampler1", 0);
+    shader->setFloat("time", (float) glfwGetTime());
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
@@ -138,8 +135,6 @@ int main() {
 
     // 退出程序前做相关清理
     application->destroy();
-    delete grassTexture;
-    delete landTexture;
-    delete noiseTexture;
+    delete texture;
     return 0;
 }

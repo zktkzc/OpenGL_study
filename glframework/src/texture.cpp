@@ -18,14 +18,23 @@ Texture::Texture(const std::string &path, unsigned int unit) {
     // 绑定纹理对象
     GL_CALL(glBindTexture(GL_TEXTURE_2D, mTexture));
     // 传输纹理数据，开辟显存
-    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA,
-                         GL_UNSIGNED_BYTE, data));
+    int width = mWidth, height = mHeight;
+    for (int level = 0; true; ++level) {
+        GL_CALL(glTexImage2D(GL_TEXTURE_2D, level, GL_RGBA, width, height, 0, GL_RGBA,
+                             GL_UNSIGNED_BYTE, data));
+        if (width == 1 && height == 1) {
+            break;
+        }
+        width = width > 1 ? width / 2 : 1;
+        height = height > 1 ? height / 2 : 1;
+    }
     // 释放数据
     stbi_image_free(data);
 
     // 设置纹理的过滤方式
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    // GL_NEAREST_MIPMAP_LINEAR 在单个MipMap上采用临近采样，在两层MipMap之间采用线性插值
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 
     // 设置纹理的包裹方式
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); // u方向
