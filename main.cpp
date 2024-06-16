@@ -4,7 +4,12 @@
 #include "checkError.h"
 #include "Application.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "stb_image.h"
+
 GLuint vao;
+GLuint texture;
 Shader *shader = nullptr;
 
 void OnResize(int width, int height) {
@@ -69,6 +74,26 @@ void prepareShader() {
     shader = new Shader("assets/shaders/vertex.glsl", "assets/shaders/fragment.glsl");
 }
 
+void prepareTexture() {
+    // 加载纹理
+    int width, height, channels;
+    // 反转y轴
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *data = stbi_load("assets/textures/1.jpg", &width, &height,
+                                    &channels, STBI_rgb_alpha);
+    // 生成纹理对象
+    GL_CALL(glGenTextures(1, &texture));
+    // 激活纹理单元
+    GL_CALL(glActiveTexture(GL_TEXTURE0));
+    // 绑定纹理对象
+    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture));
+    // 传输纹理数据，开辟显存
+    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                         GL_UNSIGNED_BYTE, data));
+    // 释放数据
+    stbi_image_free(data);
+}
+
 void render() {
     // 执行OpenGL画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
@@ -81,7 +106,7 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)0));
+    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) 0));
     // 解绑VAO
     GL_CALL(glBindVertexArray(0));
     shader->end();
@@ -103,6 +128,7 @@ int main() {
 
     prepareShader();
     prepareVAO();
+    prepareTexture();
 
     // 执行窗体循环
     while (application->update()) {

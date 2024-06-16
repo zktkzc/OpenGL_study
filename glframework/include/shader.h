@@ -20,7 +20,7 @@ public:
     void setVector3(const std::string &name, const float* values) const;
 
 private:
-    void checkShaderErrors(GLuint target, const std::string &type);
+    static void checkShaderErrors(GLuint target, const std::string &type);
 
 private:
     GLuint mProgram{0};
