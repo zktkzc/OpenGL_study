@@ -32,12 +32,17 @@ void prepareVAO() {
             0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f,
     };
+    float uvs[] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            0.5f, 1.0f,
+    };
     unsigned int indices[] = {
             0, 1, 2,
     };
 
     // 创建VBO
-    GLuint posVbo, colorVbo;
+    GLuint posVbo, colorVbo, uvVbo;
     GL_CALL(glGenBuffers(1, &posVbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
@@ -45,6 +50,10 @@ void prepareVAO() {
     GL_CALL(glGenBuffers(1, &colorVbo));
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW));
+
+    GL_CALL(glGenBuffers(1, &uvVbo));
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+    GL_CALL(glBufferData(GL_ARRAY_BUFFER, sizeof(uvs), uvs, GL_STATIC_DRAW));
 
     // 创建EBO
     GLuint ebo;
@@ -63,6 +72,10 @@ void prepareVAO() {
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glEnableVertexAttribArray(1));
     GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+
+    GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+    GL_CALL(glEnableVertexAttribArray(2));
+    GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *) 0));
 
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
