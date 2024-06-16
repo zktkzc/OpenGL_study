@@ -92,6 +92,10 @@ void prepareTexture() {
                          GL_UNSIGNED_BYTE, data));
     // 释放数据
     stbi_image_free(data);
+
+    // 设置纹理的过滤方式
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 }
 
 void render() {
