@@ -15,8 +15,10 @@ public:
 
     void setFloat(const std::string &name, float value);
 
+    void setVector3(const std::string &name, float x, float y, float z);
+
 private:
-    void checkShaderErrors(GLuint target, const std::string& type);
+    void checkShaderErrors(GLuint target, const std::string &type);
 
 private:
     GLuint mProgram{0};

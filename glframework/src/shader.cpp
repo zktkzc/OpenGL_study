@@ -102,3 +102,8 @@ void Shader::setFloat(const std::string &name, float value) {
     // 通过位置更新Uniform变量的值
     GL_CALL(glUniform1f(location, value));
 }
+
+void Shader::setVector3(const std::string &name, float x, float y, float z) {
+    GLint location = GL_CALL(glGetUniformLocation(mProgram, name.c_str()));
+    GL_CALL(glUniform3f(location, x, y, z));
+}
