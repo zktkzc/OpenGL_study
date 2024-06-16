@@ -36,9 +36,9 @@ void prepareVAO() {
     };
     float uvs[] = {
             0.0f, 0.0f,
-            10.0f, 0.0f,
-            0.0f, 10.0f,
-            10.0f, 10.0f
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f
     };
     unsigned int indices[] = {
             0, 1, 2,
@@ -127,6 +127,7 @@ void render() {
     shader->begin();
     // 设置uniform变量
     shader->setInt("sampler", 0);
+    shader->setFloat("time", (float) glfwGetTime());
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
