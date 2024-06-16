@@ -76,7 +76,7 @@ void Shader::end() const {
     GL_CALL(glUseProgram(0));
 }
 
-void Shader::checkShaderErrors(GLuint target, std::string type) {
+void Shader::checkShaderErrors(GLuint target, const std::string& type) {
     int success = 0;
     char infoLog[1024];
     if (type == "COMPILE") {
@@ -94,4 +94,11 @@ void Shader::checkShaderErrors(GLuint target, std::string type) {
     } else {
         std::cout << "ERROR::SHADER::UNKNOWN_TYPE" << std::endl;
     }
+}
+
+void Shader::setFloat(const std::string &name, float value) {
+    // 通过名称拿到Uniform变量的位置
+    GLint location = GL_CALL(glGetUniformLocation(mProgram, name.c_str()));
+    // 通过位置更新Uniform变量的值
+    GL_CALL(glUniform1f(location, value));
 }

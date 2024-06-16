@@ -13,9 +13,11 @@ public:
 
     void end() const;
 
-private:
-    void checkShaderErrors(GLuint target, std::string type);
+    void setFloat(const std::string &name, float value);
 
-public:
+private:
+    void checkShaderErrors(GLuint target, const std::string& type);
+
+private:
     GLuint mProgram{0};
 };
