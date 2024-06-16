@@ -7,5 +7,6 @@ in vec3 color;
 
 void main()
 {
-    FragColor = vec4(color, 1.0) * (sin(time) + 1.0) / 2.0;
+    float intensity = (sin(time) + 1.0) / 2.0;
+    FragColor = vec4(vec3(intensity) + color, 1.0);
 }
