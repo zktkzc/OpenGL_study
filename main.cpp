@@ -76,7 +76,8 @@ void render() {
     // 绑定当前的program
     shader->begin();
     // 设置uniform变量
-    shader->setVector3("uColor", 0.3f, 0.4f, 0.5f);
+    float color[] = {0.9f, 0.3f, 0.25f};
+    shader->setVector3("uColor", color);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
