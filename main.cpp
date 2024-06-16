@@ -101,8 +101,6 @@ void render() {
     // 设置uniform变量
     shader->setInt("sampler1", 0);
     shader->setFloat("time", (float) glfwGetTime());
-    shader->setFloat("width", texture->getWidth());
-    shader->setFloat("height", texture->getHeight());
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
