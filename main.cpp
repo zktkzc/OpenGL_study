@@ -3,14 +3,11 @@
 #include "shader.h"
 #include "checkError.h"
 #include "Application.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "stb_image.h"
+#include "texture.h"
 
 GLuint vao;
-GLuint texture;
 Shader *shader = nullptr;
+Texture *texture = nullptr;
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -92,31 +89,7 @@ void prepareShader() {
 }
 
 void prepareTexture() {
-    // 加载纹理
-    int width, height, channels;
-    // 反转y轴
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load("assets/textures/1.jpg", &width, &height,
-                                    &channels, STBI_rgb_alpha);
-    // 生成纹理对象
-    GL_CALL(glGenTextures(1, &texture));
-    // 激活纹理单元
-    GL_CALL(glActiveTexture(GL_TEXTURE0));
-    // 绑定纹理对象
-    GL_CALL(glBindTexture(GL_TEXTURE_2D, texture));
-    // 传输纹理数据，开辟显存
-    GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-                         GL_UNSIGNED_BYTE, data));
-    // 释放数据
-    stbi_image_free(data);
-
-    // 设置纹理的过滤方式
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-
-    // 设置纹理的包裹方式
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); // u方向
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)); // v方向
+    texture = new Texture("assets/textures/1.jpg", 0);
 }
 
 void render() {
@@ -127,7 +100,6 @@ void render() {
     shader->begin();
     // 设置uniform变量
     shader->setInt("sampler", 0);
-    shader->setFloat("time", (float) glfwGetTime());
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
@@ -162,5 +134,6 @@ int main() {
 
     // 退出程序前做相关清理
     application->destroy();
+    delete texture;
     return 0;
 }
