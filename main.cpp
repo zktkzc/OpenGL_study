@@ -25,20 +25,24 @@ void prepareVAO() {
     float positions[] = {
             -0.5f, -0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f
     };
     float uvs[] = {
             0.0f, 0.0f,
-            1.0f, 0.0f,
-            0.5f, 1.0f,
+            10.0f, 0.0f,
+            0.0f, 10.0f,
+            10.0f, 10.0f
     };
     unsigned int indices[] = {
             0, 1, 2,
+            2, 1, 3
     };
 
     // 创建VBO
@@ -112,7 +116,7 @@ void prepareTexture() {
 
     // 设置纹理的包裹方式
     GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)); // u方向
-    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)); // v方向
+    GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)); // v方向
 }
 
 void render() {
@@ -126,7 +130,7 @@ void render() {
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) 0));
+    GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) 0));
     // 解绑VAO
     GL_CALL(glBindVertexArray(0));
     shader->end();
