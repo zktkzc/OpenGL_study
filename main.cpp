@@ -8,6 +8,7 @@
 GLuint vao;
 Shader *shader = nullptr;
 Texture *texture = nullptr;
+glm::mat4 transform(1.0f);
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -17,29 +18,31 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
+void doTransform() {
+    // 构建一个旋转矩阵，绕着Z轴旋转45°角，rotate函数接受的不是角度（degree），而是弧度（radians）
+    // radians函数是模板函数，切记要传入float类型数据，加f后缀
+    transform = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
             -0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
             0.5f, -0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.5f
     };
     float uvs[] = {
             0.0f, 0.0f,
+            0.5f, 1.0f,
             1.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f
     };
     unsigned int indices[] = {
             0, 1, 2,
-            2, 1, 3
     };
 
     // 创建VBO
@@ -100,49 +103,17 @@ void render() {
     shader->begin();
     // 设置uniform变量
     shader->setInt("sampler1", 0);
-    shader->setFloat("time", (float) glfwGetTime());
+    shader->setMatrix4x4("transform", transform);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
-    GL_CALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) 0));
+    GL_CALL(glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *) 0));
     // 解绑VAO
     GL_CALL(glBindVertexArray(0));
     shader->end();
 }
 
 int main() {
-    // 向量
-    glm::vec2 v0(0);
-    glm::vec3 v1(0);
-    glm::vec4 v2(0);
-
-    glm::vec4 vadd = v2 + glm::vec4(0);
-
-    auto mul = vadd * v2; // 对应的元素相乘，放到对应的位置
-    auto dotRes = glm::dot(vadd, v2); // 点乘
-
-    glm::vec3 vt0, vt1;
-    auto crossRes = glm::cross(vt0, vt1); // 叉乘，只支持三维向量进行叉乘
-
-    //矩阵
-    glm::mat4 m0(1.0f);
-    glm::mat4 m1 = glm::identity<glm::mat4>();
-    glm::mat2 mm2(1.0f);
-    glm::mat3 mm3(1.0f);
-    glm::mat2x3 mm4(1.0f);
-
-    std::cout << glm::to_string(mm4) << std::endl;
-
-    auto madd = m0 + m1;
-    auto mmul = m0 * m1;
-    auto res = m0 * v2;
-
-    // 转置矩阵
-    auto transMat = glm::transpose(madd);
-
-    // 逆矩阵
-    auto inverseMat = glm::inverse(madd);
-
     if (!application->init()) {
         return -1;
     }
@@ -159,6 +130,8 @@ int main() {
     prepareShader();
     prepareVAO();
     prepareTexture();
+
+    doTransform();
 
     // 执行窗体循环
     while (application->update()) {
