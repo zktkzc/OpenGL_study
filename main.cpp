@@ -111,6 +111,38 @@ void render() {
 }
 
 int main() {
+    // 向量
+    glm::vec2 v0(0);
+    glm::vec3 v1(0);
+    glm::vec4 v2(0);
+
+    glm::vec4 vadd = v2 + glm::vec4(0);
+
+    auto mul = vadd * v2; // 对应的元素相乘，放到对应的位置
+    auto dotRes = glm::dot(vadd, v2); // 点乘
+
+    glm::vec3 vt0, vt1;
+    auto crossRes = glm::cross(vt0, vt1); // 叉乘，只支持三维向量进行叉乘
+
+    //矩阵
+    glm::mat4 m0(1.0f);
+    glm::mat4 m1 = glm::identity<glm::mat4>();
+    glm::mat2 mm2(1.0f);
+    glm::mat3 mm3(1.0f);
+    glm::mat2x3 mm4(1.0f);
+
+    std::cout << glm::to_string(mm4) << std::endl;
+
+    auto madd = m0 + m1;
+    auto mmul = m0 * m1;
+    auto res = m0 * v2;
+
+    // 转置矩阵
+    auto transMat = glm::transpose(madd);
+
+    // 逆矩阵
+    auto inverseMat = glm::inverse(madd);
+
     if (!application->init()) {
         return -1;
     }
