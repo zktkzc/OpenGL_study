@@ -18,10 +18,28 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
-void doTransform() {
+// 旋转变换
+void doRotationTransform() {
     // 构建一个旋转矩阵，绕着Z轴旋转45°角，rotate函数接受的不是角度（degree），而是弧度（radians）
     // radians函数是模板函数，切记要传入float类型数据，加f后缀
     transform = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+}
+
+// 平移变换
+void doTranslationTransform() {
+    transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+}
+
+// 缩放变换
+void doScaleTransform() {
+    transform = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.5f, 1.0f));
+}
+
+void doTransform() {
+    glm::mat4 rotateMat = glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 translateMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.0f, 0.0f));
+//    transform = translateMat * rotateMat; // 先旋转再平移
+    transform = rotateMat * translateMat; // 先平移再旋转
 }
 
 void prepareVAO() {
@@ -131,6 +149,9 @@ int main() {
     prepareVAO();
     prepareTexture();
 
+    // doRotationTransform();
+//    doTranslationTransform();
+    // doScaleTransform();
     doTransform();
 
     // 执行窗体循环
