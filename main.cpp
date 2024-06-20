@@ -10,6 +10,7 @@ Shader *shader = nullptr;
 Texture *texture = nullptr;
 glm::mat4 transform(1.0f);
 glm::mat4 viewMatrix(1.0f);
+glm::mat4 orthoMatrix(1.0f);
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -22,9 +23,9 @@ void OnKeyBoard(int key, int action, int mods) {
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
@@ -33,8 +34,8 @@ void prepareVAO() {
     };
     float uvs[] = {
             0.0f, 0.0f,
-            0.5f, 1.0f,
             1.0f, 0.0f,
+            0.0f, 1.0f,
     };
     unsigned int indices[] = {
             0, 1, 2,
@@ -93,10 +94,15 @@ void prepareTexture() {
 void prepareCamera() {
     // 生成一个摄像机的视图矩阵
     viewMatrix = glm::lookAt(
-        glm::vec3(0.5f, 0.0f, 0.5f), // 当前摄像机的位置
-        glm::vec3(0.5f, 0.0f, 0.0f), // 当前摄像机的目标点
+        glm::vec3(0.0f, 0.0f, 1.0f), // 当前摄像机的位置
+        glm::vec3(0.0f, 0.0f, 0.0f), // 当前摄像机的目标点
         glm::vec3(0.0f, 1.0f, 0.0f) // 当前摄像机的上向量
     );
+}
+
+void prepareOrtho() {
+    // 生成一个正交投影矩阵
+    orthoMatrix = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
 }
 
 void render() {
@@ -109,6 +115,7 @@ void render() {
     shader->setInt("sampler1", 0);
     shader->setMatrix4x4("transform", transform);
     shader->setMatrix4x4("viewMatrix", viewMatrix);
+    shader->setMatrix4x4("projectionMatrix", orthoMatrix);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
@@ -136,6 +143,7 @@ int main() {
     prepareVAO();
     prepareTexture();
     prepareCamera();
+    prepareOrtho();
 
     // 执行窗体循环
     while (application->update()) {
