@@ -19,12 +19,11 @@ void OnKeyBoard(int key, int action, int mods) {
 }
 
 void preTransform() {
-    transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.6f, 0.0f, 0.0f));
+    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 void doTransform() {
-    float angle = 1.0f;
-    transform = glm::rotate(transform, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = glm::translate(transform, glm::vec3(0.0001f, 0.0f, 0.0f));
 }
 
 void prepareVAO() {
