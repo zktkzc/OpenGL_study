@@ -94,7 +94,7 @@ void prepareTexture() {
 void prepareCamera() {
     // 生成一个摄像机的视图矩阵
     viewMatrix = glm::lookAt(
-        glm::vec3(1.0f, 0.0f, 0.1f), // 当前摄像机的位置
+        glm::vec3(1.0f, 0.0f, 1.0f), // 当前摄像机的位置
         glm::vec3(0.0f, 0.0f, 0.0f), // 当前摄像机的目标点
         glm::vec3(0.0f, 1.0f, 0.0f) // 当前摄像机的上向量
     );
