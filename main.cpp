@@ -23,9 +23,9 @@ void OnKeyBoard(int key, int action, int mods) {
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
-            -1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
+            -1.0f, 0.0f, -5.0f,
+            1.0f, 0.0f, -5.0f,
+            0.0f, 1.0f, -5.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
