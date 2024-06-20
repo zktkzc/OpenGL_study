@@ -19,7 +19,7 @@ void OnKeyBoard(int key, int action, int mods) {
 }
 
 void preTransform() {
-    transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    transform = glm::scale(transform, glm::vec3(0.1f, 1.0f, 1.0f));
 }
 
 void doTransform() {
