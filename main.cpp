@@ -18,12 +18,9 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
-// 旋转动画
-float angle = 0.0f;
-void doRotation() {
-    angle += 2.0f;
-    // 每一帧都会重新构建一个旋转矩阵
-    transform = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+void doTransform() {
+    float angle = 1.0f;
+    transform = glm::rotate(transform, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
 }
 
 void prepareVAO() {
@@ -135,7 +132,7 @@ int main() {
 
     // 执行窗体循环
     while (application->update()) {
-        doRotation();
+        doTransform();
         render();
     }
 
