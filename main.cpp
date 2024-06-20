@@ -109,7 +109,7 @@ void prepareOrtho() {
 void preparePerspective() {
     // 生成一个透视投影矩阵
     perspectiveMatrix = glm::perspective(
-        glm::radians(60.0f), // 在Y轴方向的视张角，单位为弧度
+        glm::radians(30.0f), // 在Y轴方向的视张角，单位为弧度
         (float) application->getWidth() / (float) application->getHeight(), // 近平面的宽高比
         0.1f, // 近裁剪面距离
         1000.0f // 远裁剪面距离
