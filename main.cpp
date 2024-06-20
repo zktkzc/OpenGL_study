@@ -23,9 +23,9 @@ void OnKeyBoard(int key, int action, int mods) {
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
-            -1.0f, 0.0f, -5.0f,
-            1.0f, 0.0f, -5.0f,
-            0.0f, 1.0f, -5.0f,
+            -1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
@@ -102,7 +102,7 @@ void prepareCamera() {
 
 void prepareOrtho() {
     // 生成一个正交投影矩阵
-    orthoMatrix = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
+    orthoMatrix = glm::ortho(-1.0f, 3.0f, -2.0f, 2.0f, 2.0f, -2.0f);
 }
 
 void render() {
