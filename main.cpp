@@ -9,9 +9,6 @@ GLuint vao;
 Shader *shader = nullptr;
 Texture *texture = nullptr;
 glm::mat4 transform(1.0f);
-glm::mat4 viewMatrix(1.0f);
-glm::mat4 orthoMatrix(1.0f);
-glm::mat4 perspectiveMatrix(1.0f);
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -24,9 +21,9 @@ void OnKeyBoard(int key, int action, int mods) {
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
-            -1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f,
     };
     float colors[] = {
             1.0f, 0.0f, 0.0f,
@@ -92,30 +89,6 @@ void prepareTexture() {
     texture = new Texture("assets/textures/1.jpg", 0);
 }
 
-void prepareCamera() {
-    // 生成一个摄像机的视图矩阵
-    viewMatrix = glm::lookAt(
-        glm::vec3(3.0f, 0.0f, 1.0f), // 当前摄像机的位置
-        glm::vec3(0.0f, 0.0f, 0.0f), // 当前摄像机的目标点
-        glm::vec3(0.0f, 1.0f, 0.0f) // 当前摄像机的上向量
-    );
-}
-
-void prepareOrtho() {
-    // 生成一个正交投影矩阵
-    orthoMatrix = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, 2.0f, -2.0f);
-}
-
-void preparePerspective() {
-    // 生成一个透视投影矩阵
-    perspectiveMatrix = glm::perspective(
-        glm::radians(30.0f), // 在Y轴方向的视张角，单位为弧度
-        (float) application->getWidth() / (float) application->getHeight(), // 近平面的宽高比
-        0.1f, // 近裁剪面距离
-        1000.0f // 远裁剪面距离
-    );
-}
-
 void render() {
     // 执行OpenGL画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
@@ -125,8 +98,6 @@ void render() {
     // 设置uniform变量
     shader->setInt("sampler1", 0);
     shader->setMatrix4x4("transform", transform);
-    shader->setMatrix4x4("viewMatrix", viewMatrix);
-    shader->setMatrix4x4("projectionMatrix", perspectiveMatrix);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
@@ -153,8 +124,6 @@ int main() {
     prepareShader();
     prepareVAO();
     prepareTexture();
-    prepareCamera();
-    preparePerspective();
 
     // 执行窗体循环
     while (application->update()) {
