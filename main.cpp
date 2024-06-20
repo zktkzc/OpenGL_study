@@ -9,6 +9,7 @@ GLuint vao;
 Shader *shader = nullptr;
 Texture *texture = nullptr;
 glm::mat4 transform(1.0f);
+glm::mat4 viewMatrix(1.0f);
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
@@ -16,14 +17,6 @@ void OnResize(int width, int height) {
 
 void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
-}
-
-void preTransform() {
-    transform = glm::scale(transform, glm::vec3(0.1f, 1.0f, 1.0f));
-}
-
-void doTransform() {
-    transform = glm::translate(transform, glm::vec3(0.0001f, 0.0f, 0.0f));
 }
 
 void prepareVAO() {
@@ -97,6 +90,15 @@ void prepareTexture() {
     texture = new Texture("assets/textures/1.jpg", 0);
 }
 
+void prepareCamera() {
+    // 生成一个摄像机的视图矩阵
+    viewMatrix = glm::lookAt(
+        glm::vec3(0.5f, 0.0f, 0.5f), // 当前摄像机的位置
+        glm::vec3(0.5f, 0.0f, 0.0f), // 当前摄像机的目标点
+        glm::vec3(0.0f, 1.0f, 0.0f) // 当前摄像机的上向量
+    );
+}
+
 void render() {
     // 执行OpenGL画布清理操作
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
@@ -106,6 +108,7 @@ void render() {
     // 设置uniform变量
     shader->setInt("sampler1", 0);
     shader->setMatrix4x4("transform", transform);
+    shader->setMatrix4x4("viewMatrix", viewMatrix);
     // 绑定VAO
     GL_CALL(glBindVertexArray(vao));
     // 发出绘制指令
@@ -132,11 +135,10 @@ int main() {
     prepareShader();
     prepareVAO();
     prepareTexture();
+    prepareCamera();
 
     // 执行窗体循环
-    preTransform();
     while (application->update()) {
-        doTransform();
         render();
     }
 
