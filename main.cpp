@@ -18,6 +18,10 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
+void preTransform() {
+    transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.6f, 0.0f, 0.0f));
+}
+
 void doTransform() {
     float angle = 1.0f;
     transform = glm::rotate(transform, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -131,6 +135,7 @@ int main() {
     prepareTexture();
 
     // 执行窗体循环
+    preTransform();
     while (application->update()) {
         doTransform();
         render();
