@@ -47,8 +47,12 @@ bool Application::init(const int &width, const int &height) {
     // 将Application对象指针绑定到窗体对象上
     glfwSetWindowUserPointer(mWindow, this);
 
-    // 键盘事件相应
+    // 键盘事件响应
     glfwSetKeyCallback(mWindow, keyCallback);
+    // 鼠标按钮事件响应
+    glfwSetMouseButtonCallback(mWindow, mouseButtonCallback);
+    // 鼠标位置事件响应
+    glfwSetCursorPosCallback(mWindow, cursorPosCallback);
 
     return true;
 }
@@ -80,4 +84,16 @@ void Application::keyCallback(GLFWwindow *window, int key, int scancode, int act
     Application *self = (Application *) glfwGetWindowUserPointer(window);
     if (self->mKeyBoardCallback != nullptr)
         self->mKeyBoardCallback(key, action, mods);
+}
+
+void Application::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+    Application *self = (Application *) glfwGetWindowUserPointer(window);
+    if (self->mMouseButtonCallback != nullptr)
+        self->mMouseButtonCallback(button, action, mods);
+}
+
+void Application::cursorPosCallback(GLFWwindow *window, double xpos, double ypos) {
+    Application *self = (Application *) glfwGetWindowUserPointer(window);
+    if (self->mCursorPosCallback != nullptr)
+        self->mCursorPosCallback(xpos, ypos);
 }

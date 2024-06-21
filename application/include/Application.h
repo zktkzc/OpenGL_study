@@ -8,6 +8,8 @@ class GLFWwindow;
 
 using ResizeCallback = void (*)(int width, int height);
 using KeyBoardCallback = void (*)(int key, int action, int mods);
+using MouseButtonCallback = void (*)(int button, int action, int mods);
+using CursorPosCallback = void (*)(double xpos, double ypos);
 
 class Application {
 public:
@@ -41,12 +43,20 @@ public:
 
     void setKeyBoardCallback(KeyBoardCallback callback) { mKeyBoardCallback = callback; }
 
+    void setMouseButtonCallback(MouseButtonCallback callback) { mMouseButtonCallback = callback; }
+
+    void setCursorPosCallback(CursorPosCallback callback) { mCursorPosCallback = callback; }
+
 private:
     Application();
 
     static void frameBufferSizeCallback(GLFWwindow *window, int width, int height);
 
     static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
+    static void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+
+    static void cursorPosCallback(GLFWwindow *window, double xpos, double ypos);
 
 private:
     static Application *mInstance;
@@ -55,4 +65,6 @@ private:
     GLFWwindow *mWindow{nullptr};
     ResizeCallback mResizeCallback{nullptr};
     KeyBoardCallback mKeyBoardCallback{nullptr};
+    MouseButtonCallback mMouseButtonCallback{nullptr};
+    CursorPosCallback mCursorPosCallback{nullptr};
 };

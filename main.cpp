@@ -18,6 +18,14 @@ void OnKeyBoard(int key, int action, int mods) {
     std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
 }
 
+void OnMouseButton(int button, int action, int mods) {
+    std::cout << "button: " << button << " action: " << action << " mods: " << mods << std::endl;
+}
+
+void OnCursorPos(double xpos, double ypos) {
+    std::cout << "xpos: " << xpos << " ypos: " << ypos << std::endl;
+}
+
 void prepareVAO() {
     // 准备顶点数据和颜色数据
     float positions[] = {
@@ -116,6 +124,10 @@ int main() {
     application->setResizeCallback(OnResize);
     // 设置键盘事件回调
     application->setKeyBoardCallback(OnKeyBoard);
+    // 设置鼠标按钮事件回调
+    application->setMouseButtonCallback(OnMouseButton);
+    // 设置鼠标位置事件回调
+    application->setCursorPosCallback(OnCursorPos);
 
     // 设置opengl视口以及清理颜色
     GL_CALL(glViewport(0, 0, application->getWidth(), application->getHeight()));
