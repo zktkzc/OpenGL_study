@@ -69,6 +69,7 @@ bool Application::update() {
 }
 
 void Application::destroy() {
+    glfwDestroyWindow(mWindow);
     glfwTerminate();
 }
 
@@ -96,4 +97,8 @@ void Application::cursorPosCallback(GLFWwindow *window, double xpos, double ypos
     Application *self = (Application *) glfwGetWindowUserPointer(window);
     if (self->mCursorPosCallback != nullptr)
         self->mCursorPosCallback(xpos, ypos);
+}
+
+void Application::getCursorPos(double *x, double *y) const {
+    glfwGetCursorPos(mWindow, x, y);
 }

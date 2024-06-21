@@ -33,6 +33,8 @@ public:
      */
     uint32_t getHeight() const { return mHeight; }
 
+    void getCursorPos(double *x, double *y) const;
+
     bool init(const int &width = 800, const int &height = 600);
 
     bool update();

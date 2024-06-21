@@ -4,26 +4,32 @@
 #include "checkError.h"
 #include "Application.h"
 #include "texture.h"
+#include "perspectiveCamera.h"
+#include "cameraControl.h"
 
 GLuint vao;
 Shader *shader = nullptr;
 Texture *texture = nullptr;
 glm::mat4 transform(1.0f);
+PerspectiveCamera *camera = nullptr;
+CameraControl *cameraControl = nullptr;
 
 void OnResize(int width, int height) {
     GL_CALL(glViewport(0, 0, width, height));
 }
 
 void OnKeyBoard(int key, int action, int mods) {
-    std::cout << "key: " << key << " action: " << action << " mods: " << mods << std::endl;
+    cameraControl->onKey(key, action, mods);
 }
 
 void OnMouseButton(int button, int action, int mods) {
-    std::cout << "button: " << button << " action: " << action << " mods: " << mods << std::endl;
+    double x, y;
+    application->getCursorPos(&x, &y);
+    cameraControl->onMouse(button, action, x, y);
 }
 
 void OnCursorPos(double xpos, double ypos) {
-    std::cout << "xpos: " << xpos << " ypos: " << ypos << std::endl;
+    cameraControl->onCursor(xpos, ypos);
 }
 
 void prepareVAO() {
@@ -73,15 +79,35 @@ void prepareVAO() {
     // 绑定VAO和EBO，加入属性描述信息
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
     GL_CALL(glEnableVertexAttribArray(0));
-    GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+    GL_CALL(glVertexAttribPointer(
+            0, 3,
+            GL_FLOAT,
+            GL_FALSE,
+            3 * sizeof(float),
+            (void *) 0
+    ));
 
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, colorVbo));
     GL_CALL(glEnableVertexAttribArray(1));
-    GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0));
+    GL_CALL(glVertexAttribPointer(
+            1,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            3 * sizeof(float),
+            (void *) 0
+    ));
 
     GL_CALL(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
     GL_CALL(glEnableVertexAttribArray(2));
-    GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *) 0));
+    GL_CALL(glVertexAttribPointer(
+            2,
+            2,
+            GL_FLOAT,
+            GL_FALSE,
+            2 * sizeof(float),
+            (void *) 0
+    ));
 
     GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
@@ -96,6 +122,17 @@ void prepareShader() {
 void prepareTexture() {
     texture = new Texture("assets/textures/1.jpg", 0);
 }
+
+void prepareCamera() {
+    camera = new PerspectiveCamera(
+            60.0f,
+            (float) application->getWidth() / (float) application->getHeight(),
+            0.1f,
+            1000.0f
+    );
+    cameraControl = new CameraControl();
+    cameraControl->setCamera(camera);
+};
 
 void render() {
     // 执行OpenGL画布清理操作
@@ -136,9 +173,11 @@ int main() {
     prepareShader();
     prepareVAO();
     prepareTexture();
+    prepareCamera();
 
     // 执行窗体循环
     while (application->update()) {
+        cameraControl->update();
         render();
     }
 
